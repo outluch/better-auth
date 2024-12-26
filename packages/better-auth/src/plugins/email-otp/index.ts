@@ -108,6 +108,15 @@ export const emailOTP = (options: EmailOTPOptions) => {
 							message: ERROR_CODES.INVALID_EMAIL,
 						});
 					}
+					if (ctx.body.type === "forget-password") {
+						const user =
+							await ctx.context.internalAdapter.findUserByEmail(email);
+						if (!user) {
+							return ctx.json({
+								success: true,
+							});
+						}
+					}
 					const otp = generateRandomString(opts.otpLength, "0-9");
 					await ctx.context.internalAdapter
 						.createVerificationValue({
